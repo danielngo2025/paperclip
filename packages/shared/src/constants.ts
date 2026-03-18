@@ -584,3 +584,20 @@ export const PLUGIN_BRIDGE_ERROR_CODES = [
   "UNKNOWN",
 ] as const;
 export type PluginBridgeErrorCode = (typeof PLUGIN_BRIDGE_ERROR_CODES)[number];
+
+export const PIPELINE_RUN_STATUSES = ["pending", "running", "completed", "failed", "cancelled"] as const;
+export type PipelineRunStatus = (typeof PIPELINE_RUN_STATUSES)[number];
+
+export const PIPELINE_STAGE_TYPES = ["execute", "review"] as const;
+export type PipelineStageType = (typeof PIPELINE_STAGE_TYPES)[number];
+
+export const PIPELINE_STAGE_STATUSES = [
+  "pending",
+  "running",
+  "approved",
+  "rejected",
+  "completed",
+  "skipped",
+  "cancelled",
+] as const;
+export type PipelineStageStatus = (typeof PIPELINE_STAGE_STATUSES)[number];

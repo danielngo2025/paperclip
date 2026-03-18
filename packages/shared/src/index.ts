@@ -94,6 +94,12 @@ export {
   type PluginWebhookDeliveryStatus,
   type PluginEventType,
   type PluginBridgeErrorCode,
+  PIPELINE_RUN_STATUSES,
+  PIPELINE_STAGE_TYPES,
+  PIPELINE_STAGE_STATUSES,
+  type PipelineRunStatus,
+  type PipelineStageType,
+  type PipelineStageStatus,
 } from "./constants.js";
 
 export type {
@@ -187,6 +193,9 @@ export type {
   PluginJobRecord,
   PluginJobRunRecord,
   PluginWebhookDeliveryRecord,
+  PipelineTemplate,
+  PipelineRun,
+  PipelineStage,
 } from "./types/index.js";
 
 export {
@@ -334,6 +343,16 @@ export {
   type PluginStateScopeKey,
   type SetPluginState,
   type ListPluginState,
+  pipelineStageDefinitionSchema,
+  createPipelineTemplateSchema,
+  updatePipelineTemplateSchema,
+  createPipelineRunSchema,
+  reviewPipelineStageSchema,
+  type PipelineStageDefinition,
+  type CreatePipelineTemplate,
+  type UpdatePipelineTemplate,
+  type CreatePipelineRun,
+  type ReviewPipelineStage,
 } from "./validators/index.js";
 
 export { API_PREFIX, API } from "./api.js";

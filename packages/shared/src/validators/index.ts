@@ -178,3 +178,16 @@ export {
   type SetPluginState,
   type ListPluginState,
 } from "./plugin.js";
+
+export {
+  pipelineStageDefinitionSchema,
+  createPipelineTemplateSchema,
+  updatePipelineTemplateSchema,
+  createPipelineRunSchema,
+  reviewPipelineStageSchema,
+  type PipelineStageDefinition,
+  type CreatePipelineTemplate,
+  type UpdatePipelineTemplate,
+  type CreatePipelineRun,
+  type ReviewPipelineStage,
+} from "./pipeline.js";

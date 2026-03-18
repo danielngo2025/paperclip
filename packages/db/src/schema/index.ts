@@ -43,3 +43,6 @@ export { pluginEntities } from "./plugin_entities.js";
 export { pluginJobs, pluginJobRuns } from "./plugin_jobs.js";
 export { pluginWebhookDeliveries } from "./plugin_webhooks.js";
 export { pluginLogs } from "./plugin_logs.js";
+export { pipelineTemplates } from "./pipeline_templates.js";
+export { pipelineRuns } from "./pipeline_runs.js";
+export { pipelineStages } from "./pipeline_stages.js";

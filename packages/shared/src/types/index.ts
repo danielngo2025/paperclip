@@ -106,3 +106,4 @@ export type {
   PluginJobRunRecord,
   PluginWebhookDeliveryRecord,
 } from "./plugin.js";
+export type { PipelineTemplate, PipelineRun, PipelineStage } from "./pipeline.js";

@@ -7,6 +7,7 @@ import { projectsApi } from "../api/projects";
 import { agentsApi } from "../api/agents";
 import { authApi } from "../api/auth";
 import { assetsApi } from "../api/assets";
+import { pipelinesApi } from "../api/pipelines";
 import { queryKeys } from "../lib/queryKeys";
 import { useProjectOrder } from "../hooks/useProjectOrder";
 import { getRecentAssigneeIds, sortAgentsByRecency, trackRecentAssignee } from "../lib/recent-assignees";
@@ -43,6 +44,7 @@ import {
   FileText,
   Loader2,
   X,
+  GitBranch,
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { extractProviderIdWithFallback } from "../lib/model-utils";
@@ -256,6 +258,8 @@ export function NewIssueDialog() {
   const [dialogCompanyId, setDialogCompanyId] = useState<string | null>(null);
   const [stagedFiles, setStagedFiles] = useState<StagedIssueFile[]>([]);
   const [isFileDragOver, setIsFileDragOver] = useState(false);
+  const [pipelineTemplateId, setPipelineTemplateId] = useState("");
+  const [pipelineOpen, setPipelineOpen] = useState(false);
   const draftTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const executionWorkspaceDefaultProjectId = useRef<string | null>(null);
 
@@ -286,6 +290,11 @@ export function NewIssueDialog() {
   const { data: session } = useQuery({
     queryKey: queryKeys.auth.session,
     queryFn: () => authApi.getSession(),
+  });
+  const { data: pipelineTemplates } = useQuery({
+    queryKey: queryKeys.pipelines.templates(effectiveCompanyId!),
+    queryFn: () => pipelinesApi.listTemplates(effectiveCompanyId!),
+    enabled: !!effectiveCompanyId && newIssueOpen,
   });
   const currentUserId = session?.user?.id ?? session?.session?.userId ?? null;
   const activeProjects = useMemo(
@@ -368,7 +377,7 @@ export function NewIssueDialog() {
 
       return { issue, companyId, failures };
     },
-    onSuccess: ({ issue, companyId, failures }) => {
+    onSuccess: async ({ issue, companyId, failures }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.issues.list(companyId) });
       if (draftTimer.current) clearTimeout(draftTimer.current);
       if (failures.length > 0) {
@@ -382,6 +391,31 @@ export function NewIssueDialog() {
             ? { label: `Open ${issueRef}`, href: `/${prefix}/issues/${issueRef}` }
             : undefined,
         });
+      }
+      // Start pipeline run if a template was selected
+      if (pipelineTemplateId) {
+        try {
+          const tpl = pipelineTemplates?.find((t) => t.id === pipelineTemplateId);
+          await pipelinesApi.startRun(companyId, {
+            templateId: pipelineTemplateId,
+            name: `${tpl?.name ?? "Pipeline"}: ${issue.title}`,
+            input: { title: issue.title, description: issue.description ?? "" },
+            projectId: issue.projectId ?? undefined,
+          });
+          queryClient.invalidateQueries({ queryKey: queryKeys.pipelines.runs(companyId) });
+          const prefix = (companies.find((company) => company.id === companyId)?.issuePrefix ?? "").trim();
+          pushToast({
+            title: "Pipeline run started",
+            body: `${tpl?.name ?? "Pipeline"} started for "${issue.title}"`,
+            action: prefix ? { label: "View Pipelines", href: `/${prefix}/pipelines` } : undefined,
+          });
+        } catch (err) {
+          pushToast({
+            title: "Pipeline run failed to start",
+            body: err instanceof Error ? err.message : "Unknown error",
+            tone: "warn",
+          });
+        }
       }
       clearDraft();
       reset();
@@ -526,6 +560,8 @@ export function NewIssueDialog() {
     setStagedFiles([]);
     setIsFileDragOver(false);
     setCompanyOpen(false);
+    setPipelineTemplateId("");
+    setPipelineOpen(false);
     executionWorkspaceDefaultProjectId.current = null;
   }
 
@@ -1267,6 +1303,47 @@ export function NewIssueDialog() {
             Labels
           </button>
 
+          {/* Pipeline chip */}
+          {pipelineTemplates && pipelineTemplates.length > 0 && (
+            <Popover open={pipelineOpen} onOpenChange={setPipelineOpen}>
+              <PopoverTrigger asChild>
+                <button className={cn(
+                  "inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs hover:bg-accent/50 transition-colors",
+                  pipelineTemplateId ? "border-blue-500/50 text-blue-600" : "border-border text-muted-foreground"
+                )}>
+                  <GitBranch className="h-3 w-3" />
+                  {pipelineTemplateId
+                    ? pipelineTemplates.find((t) => t.id === pipelineTemplateId)?.name ?? "Pipeline"
+                    : "Pipeline"}
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-52 p-1" align="start">
+                <button
+                  className={cn(
+                    "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
+                    !pipelineTemplateId && "bg-accent"
+                  )}
+                  onClick={() => { setPipelineTemplateId(""); setPipelineOpen(false); }}
+                >
+                  None
+                </button>
+                {pipelineTemplates.map((t) => (
+                  <button
+                    key={t.id}
+                    className={cn(
+                      "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
+                      t.id === pipelineTemplateId && "bg-accent"
+                    )}
+                    onClick={() => { setPipelineTemplateId(t.id); setPipelineOpen(false); }}
+                  >
+                    <GitBranch className="h-3 w-3 text-muted-foreground" />
+                    {t.name}
+                  </button>
+                ))}
+              </PopoverContent>
+            </Popover>
+          )}
+
           <input
             ref={stageFileInputRef}
             type="file"
@@ -1335,7 +1412,7 @@ export function NewIssueDialog() {
             >
               <span className="inline-flex items-center justify-center gap-1.5">
                 {createIssue.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
-                <span>{createIssue.isPending ? "Creating..." : "Create Issue"}</span>
+                <span>{createIssue.isPending ? "Creating..." : pipelineTemplateId ? "Create & Run Pipeline" : "Create Issue"}</span>
               </span>
             </Button>
           </div>

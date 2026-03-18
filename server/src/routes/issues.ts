@@ -29,6 +29,7 @@ import { logger } from "../middleware/logger.js";
 import { forbidden, HttpError, unauthorized } from "../errors.js";
 import { assertCompanyAccess, getActorInfo } from "./authz.js";
 import { shouldWakeAssigneeOnCheckout } from "./issues-checkout-wakeup.js";
+import { pipelineService } from "../services/pipelines.js";
 import { isAllowedContentType, MAX_ATTACHMENT_BYTES } from "../attachment-types.js";
 
 const MAX_ISSUE_COMMENT_LIMIT = 500;
@@ -867,6 +868,16 @@ export function issueRoutes(db: Db, storage: StorageService) {
         heartbeat
           .wakeup(agentId, wakeup)
           .catch((err) => logger.warn({ err, issueId: issue.id, agentId }, "failed to wake agent on issue update"));
+      }
+
+      // Pipeline advancement hook: check if this issue belongs to a pipeline stage
+      if (issue.status === "done" || issue.status === "cancelled") {
+        try {
+          const pipelines = pipelineService(db);
+          await pipelines.handleIssueCompleted(issue.id, issue.status);
+        } catch (err) {
+          logger.warn({ err, issueId: issue.id }, "failed to advance pipeline on issue completion");
+        }
       }
     })();
 
