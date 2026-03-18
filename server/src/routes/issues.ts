@@ -1,6 +1,6 @@
 import { Router, type Request, type Response } from "express";
 import multer from "multer";
-import type { Db } from "@paperclipai/db";
+import type { Db } from "@nexioai/db";
 import {
   addIssueCommentSchema,
   createIssueAttachmentMetadataSchema,
@@ -11,7 +11,7 @@ import {
   issueDocumentKeySchema,
   upsertIssueDocumentSchema,
   updateIssueSchema,
-} from "@paperclipai/shared";
+} from "@nexioai/shared";
 import type { StorageService } from "../storage/types.js";
 import { validate } from "../middleware/validate.js";
 import {

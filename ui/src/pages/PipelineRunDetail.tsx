@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { XCircle, ExternalLink, Check, X } from "lucide-react";
-import type { PipelineStage } from "@paperclipai/shared";
+import type { PipelineStage } from "@nexioai/shared";
 
 export function PipelineRunDetail() {
   const { runId } = useParams<{ runId: string }>();

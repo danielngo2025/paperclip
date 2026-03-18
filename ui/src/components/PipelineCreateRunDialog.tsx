@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { PipelineTemplate } from "@paperclipai/shared";
+import type { PipelineTemplate } from "@nexioai/shared";
 import { pipelinesApi } from "../api/pipelines";
 import { queryKeys } from "../lib/queryKeys";
 import { useCompany } from "../context/CompanyContext";

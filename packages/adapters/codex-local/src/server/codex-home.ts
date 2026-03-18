@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { AdapterExecutionContext } from "@paperclipai/adapter-utils";
+import type { AdapterExecutionContext } from "@nexioai/adapter-utils";
 
 const TRUTHY_ENV_RE = /^(1|true|yes|on)$/i;
 const COPIED_SHARED_FILES = ["config.json", "config.toml", "instructions.md"] as const;
@@ -22,14 +22,14 @@ export function resolveCodexHomeDir(env: NodeJS.ProcessEnv = process.env): strin
 }
 
 function isWorktreeMode(env: NodeJS.ProcessEnv): boolean {
-  return TRUTHY_ENV_RE.test(env.PAPERCLIP_IN_WORKTREE ?? "");
+  return TRUTHY_ENV_RE.test(env.NEXIO_IN_WORKTREE ?? "");
 }
 
 function resolveWorktreeCodexHomeDir(env: NodeJS.ProcessEnv): string | null {
   if (!isWorktreeMode(env)) return null;
-  const paperclipHome = nonEmpty(env.PAPERCLIP_HOME);
+  const paperclipHome = nonEmpty(env.NEXIO_HOME);
   if (!paperclipHome) return null;
-  const instanceId = nonEmpty(env.PAPERCLIP_INSTANCE_ID);
+  const instanceId = nonEmpty(env.NEXIO_INSTANCE_ID);
   if (instanceId) {
     return path.resolve(paperclipHome, "instances", instanceId, "codex-home");
   }

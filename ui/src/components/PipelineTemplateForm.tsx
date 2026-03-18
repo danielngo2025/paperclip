@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { PipelineStageDefinition } from "@paperclipai/shared";
-import { AGENT_ROLES } from "@paperclipai/shared";
+import type { PipelineStageDefinition } from "@nexioai/shared";
+import { AGENT_ROLES } from "@nexioai/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

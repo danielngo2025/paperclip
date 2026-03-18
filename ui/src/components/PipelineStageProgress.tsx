@@ -1,4 +1,4 @@
-import type { PipelineStage } from "@paperclipai/shared";
+import type { PipelineStage } from "@nexioai/shared";
 import { cn } from "@/lib/utils";
 import { Check, X, Loader2, Clock, Ban } from "lucide-react";
 

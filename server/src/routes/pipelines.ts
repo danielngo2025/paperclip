@@ -1,11 +1,11 @@
 import { Router } from "express";
-import type { Db } from "@paperclipai/db";
+import type { Db } from "@nexioai/db";
 import {
   createPipelineTemplateSchema,
   updatePipelineTemplateSchema,
   createPipelineRunSchema,
   reviewPipelineStageSchema,
-} from "@paperclipai/shared";
+} from "@nexioai/shared";
 import { validate } from "../middleware/validate.js";
 import { pipelineService } from "../services/pipelines.js";
 import { logActivity } from "../services/activity-log.js";

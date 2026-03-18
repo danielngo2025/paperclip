@@ -81,5 +81,5 @@ pnpm paperclipai configure --section server
 Runtime override via environment variable:
 
 ```sh
-PAPERCLIP_DEPLOYMENT_MODE=authenticated pnpm paperclipai run
+NEXIO_DEPLOYMENT_MODE=authenticated pnpm paperclipai run
 ```

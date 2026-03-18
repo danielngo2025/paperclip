@@ -13,9 +13,9 @@ pnpm dev --tailscale-auth
 
 This configures:
 
-- `PAPERCLIP_DEPLOYMENT_MODE=authenticated`
-- `PAPERCLIP_DEPLOYMENT_EXPOSURE=private`
-- `PAPERCLIP_AUTH_BASE_URL_MODE=auto`
+- `NEXIO_DEPLOYMENT_MODE=authenticated`
+- `NEXIO_DEPLOYMENT_EXPOSURE=private`
+- `NEXIO_AUTH_BASE_URL_MODE=auto`
 - `HOST=0.0.0.0` (bind on all interfaces)
 
 Equivalent flag:

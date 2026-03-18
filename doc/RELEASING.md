@@ -226,7 +226,7 @@ If you want to exercise onboarding from the current committed ref instead of npm
 
 ```bash
 ./scripts/clean-onboard-ref.sh
-PAPERCLIP_PORT=3234 ./scripts/clean-onboard-ref.sh
+NEXIO_PORT=3234 ./scripts/clean-onboard-ref.sh
 ./scripts/clean-onboard-ref.sh HEAD
 ```
 

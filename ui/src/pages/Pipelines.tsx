@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { GitBranch, Plus, Play, Trash2 } from "lucide-react";
-import type { PipelineTemplate, PipelineRun } from "@paperclipai/shared";
+import type { PipelineTemplate, PipelineRun } from "@nexioai/shared";
 
 const STATUS_VARIANT: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
   pending: "outline",

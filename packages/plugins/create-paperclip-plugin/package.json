@@ -1,9 +1,9 @@
 {
-  "name": "@paperclipai/create-paperclip-plugin",
+  "name": "@nexioai/create-nexio-plugin",
   "version": "0.1.0",
   "type": "module",
   "bin": {
-    "create-paperclip-plugin": "./dist/index.js"
+    "create-nexio-plugin": "./dist/index.js"
   },
   "exports": {
     ".": "./src/index.ts"
@@ -11,7 +11,7 @@
   "publishConfig": {
     "access": "public",
     "bin": {
-      "create-paperclip-plugin": "./dist/index.js"
+      "create-nexio-plugin": "./dist/index.js"
     },
     "exports": {
       ".": {
@@ -31,7 +31,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@paperclipai/plugin-sdk": "workspace:*"
+    "@nexioai/plugin-sdk": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^24.6.0",

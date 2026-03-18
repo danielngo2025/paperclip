@@ -1,4 +1,4 @@
-import type { PipelineTemplate, PipelineRun, PipelineStage } from "@paperclipai/shared";
+import type { PipelineTemplate, PipelineRun, PipelineStage } from "@nexioai/shared";
 import { api } from "./client";
 
 export const pipelinesApi = {

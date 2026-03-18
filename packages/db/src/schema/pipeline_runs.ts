@@ -2,7 +2,7 @@ import { pgTable, uuid, text, jsonb, timestamp, index } from "drizzle-orm/pg-cor
 import { companies } from "./companies.js";
 import { pipelineTemplates } from "./pipeline_templates.js";
 import { projects } from "./projects.js";
-import type { PipelineStageDefinition } from "@paperclipai/shared";
+import type { PipelineStageDefinition } from "@nexioai/shared";
 
 export const pipelineRuns = pgTable("pipeline_runs", {
   id: uuid("id").primaryKey().defaultRandom(),

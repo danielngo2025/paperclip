@@ -31,17 +31,17 @@ if (process.env.npm_config_authenticated_private === "true") {
 
 const env = {
   ...process.env,
-  PAPERCLIP_UI_DEV_MIDDLEWARE: "true",
+  NEXIO_UI_DEV_MIDDLEWARE: "true",
 };
 
 if (tailscaleAuth) {
-  env.PAPERCLIP_DEPLOYMENT_MODE = "authenticated";
-  env.PAPERCLIP_DEPLOYMENT_EXPOSURE = "private";
-  env.PAPERCLIP_AUTH_BASE_URL_MODE = "auto";
+  env.NEXIO_DEPLOYMENT_MODE = "authenticated";
+  env.NEXIO_DEPLOYMENT_EXPOSURE = "private";
+  env.NEXIO_AUTH_BASE_URL_MODE = "auto";
   env.HOST = "0.0.0.0";
-  console.log("[paperclip] dev mode: authenticated/private (tailscale-friendly) on 0.0.0.0");
+  console.log("[nexio] dev mode: authenticated/private (tailscale-friendly) on 0.0.0.0");
 } else {
-  console.log("[paperclip] dev mode: local_trusted (default)");
+  console.log("[nexio] dev mode: local_trusted (default)");
 }
 
 const pnpmBin = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
@@ -89,10 +89,10 @@ async function runPnpm(args, options = {}) {
 
 async function maybePreflightMigrations() {
   if (mode !== "watch") return;
-  if (process.env.PAPERCLIP_MIGRATION_PROMPT === "never") return;
+  if (process.env.NEXIO_MIGRATION_PROMPT === "never") return;
 
   const status = await runPnpm(
-    ["--filter", "@paperclipai/db", "exec", "tsx", "src/migration-status.ts", "--json"],
+    ["--filter", "@nexioai/db", "exec", "tsx", "src/migration-status.ts", "--json"],
     { env },
   );
   if (status.code !== 0) {
@@ -112,7 +112,7 @@ async function maybePreflightMigrations() {
     return;
   }
 
-  const autoApply = process.env.PAPERCLIP_MIGRATION_AUTO_APPLY === "true";
+  const autoApply = process.env.NEXIO_MIGRATION_AUTO_APPLY === "true";
   let shouldApply = autoApply;
 
   if (!autoApply) {
@@ -157,9 +157,9 @@ async function maybePreflightMigrations() {
 await maybePreflightMigrations();
 
 async function buildPluginSdk() {
-  console.log("[paperclip] building plugin sdk...");
+  console.log("[nexio] building plugin sdk...");
   const result = await runPnpm(
-    ["--filter", "@paperclipai/plugin-sdk", "build"],
+    ["--filter", "@nexioai/plugin-sdk", "build"],
     { stdio: "inherit" },
   );
   if (result.signal) {
@@ -167,7 +167,7 @@ async function buildPluginSdk() {
     return;
   }
   if (result.code !== 0) {
-    console.error("[paperclip] plugin sdk build failed");
+    console.error("[nexio] plugin sdk build failed");
     process.exit(result.code);
   }
 }
@@ -175,13 +175,13 @@ async function buildPluginSdk() {
 await buildPluginSdk();
 
 if (mode === "watch") {
-  env.PAPERCLIP_MIGRATION_PROMPT = "never";
+  env.NEXIO_MIGRATION_PROMPT = "never";
 }
 
 const serverScript = mode === "watch" ? "dev:watch" : "dev";
 const child = spawn(
   pnpmBin,
-  ["--filter", "@paperclipai/server", serverScript, ...forwardedArgs],
+  ["--filter", "@nexioai/server", serverScript, ...forwardedArgs],
   { stdio: "inherit", env, shell: process.platform === "win32" },
 );
 

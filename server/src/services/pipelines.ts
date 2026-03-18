@@ -1,5 +1,5 @@
 import { and, asc, desc, eq, inArray, notInArray, sql } from "drizzle-orm";
-import type { Db } from "@paperclipai/db";
+import type { Db } from "@nexioai/db";
 import {
   pipelineTemplates,
   pipelineRuns,
@@ -8,9 +8,137 @@ import {
   issues,
   issueDocuments,
   documents,
-} from "@paperclipai/db";
-import type { PipelineStageDefinition } from "@paperclipai/shared";
+} from "@nexioai/db";
+import type { PipelineStageDefinition } from "@nexioai/shared";
 import { logger } from "../middleware/logger.js";
+
+type DefaultTemplate = {
+  name: string;
+  description: string;
+  stages: PipelineStageDefinition[];
+};
+
+const DEFAULT_PIPELINE_TEMPLATES: DefaultTemplate[] = [
+  {
+    name: "Feature Development Pipeline",
+    description:
+      "End-to-end feature development: plan, review, code, review, create PR, and PR review. Reviews are human-in-the-loop approval gates.",
+    stages: [
+      {
+        key: "plan",
+        label: "Plan",
+        role: "engineer",
+        type: "execute",
+        titleTemplate: "Plan: {{input.title}}",
+        descriptionTemplate:
+          "Create a detailed implementation plan for:\n\n{{input.description}}\n\nInclude approach, file changes, and edge cases.",
+      },
+      {
+        key: "plan_review",
+        label: "Plan Review",
+        role: "engineer",
+        type: "review",
+        titleTemplate: "Review Plan: {{input.title}}",
+        descriptionTemplate:
+          "Review the implementation plan and approve or request changes.\n\nPlan:\n{{stages.plan.output}}",
+        contextFrom: "plan",
+        differentAgentFrom: "plan",
+      },
+      {
+        key: "code",
+        label: "Code",
+        role: "engineer",
+        type: "execute",
+        titleTemplate: "Implement: {{input.title}}",
+        descriptionTemplate:
+          "Write code based on the approved plan:\n\n{{stages.plan.output}}",
+        contextFrom: "plan",
+      },
+      {
+        key: "code_review",
+        label: "Code Review",
+        role: "engineer",
+        type: "review",
+        titleTemplate: "Code Review: {{input.title}}",
+        descriptionTemplate:
+          "Review the code implementation for correctness, style, and completeness.\n\nPlan:\n{{stages.plan.output}}",
+        contextFrom: "code",
+        differentAgentFrom: "code",
+      },
+      {
+        key: "pr",
+        label: "Create PR",
+        role: "engineer",
+        type: "execute",
+        titleTemplate: "Create PR: {{input.title}}",
+        descriptionTemplate:
+          "Commit, push, and create a pull request for the approved code.\n\nPlan:\n{{stages.plan.output}}",
+        contextFrom: "code",
+        sameAgentAs: "code",
+      },
+      {
+        key: "pr_review",
+        label: "PR Review",
+        role: "engineer",
+        type: "review",
+        titleTemplate: "PR Review: {{input.title}}",
+        descriptionTemplate:
+          "Final review of the pull request. Verify the PR is complete and ready to merge.",
+        contextFrom: "pr",
+        differentAgentFrom: "code",
+      },
+    ],
+  },
+  {
+    name: "Simple Task Pipeline",
+    description:
+      "Quick implement-review-PR cycle for simple tasks. Includes automated PR comment resolution.",
+    stages: [
+      {
+        key: "implement",
+        label: "Implement",
+        role: "engineer",
+        type: "execute",
+        titleTemplate: "Implement: {{input.title}}",
+        descriptionTemplate:
+          "Implement the following task:\n\n{{input.description}}",
+      },
+      {
+        key: "review",
+        label: "Review",
+        role: "engineer",
+        type: "review",
+        titleTemplate: "Review: {{input.title}}",
+        descriptionTemplate:
+          "Review the implementation for correctness and completeness.\n\nTask:\n{{input.description}}\n\nImplementation:\n{{stages.implement.output}}",
+        contextFrom: "implement",
+        differentAgentFrom: "implement",
+      },
+      {
+        key: "pr",
+        label: "Create PR",
+        role: "engineer",
+        type: "execute",
+        titleTemplate: "Create PR: {{input.title}}",
+        descriptionTemplate:
+          "Commit, push, and create a pull request for the approved implementation.",
+        contextFrom: "implement",
+        sameAgentAs: "implement",
+      },
+      {
+        key: "pr_followup",
+        label: "Resolve PR Comments",
+        role: "engineer",
+        type: "execute",
+        titleTemplate: "Resolve PR Comments: {{input.title}}",
+        descriptionTemplate:
+          "Check the pull request for reviewer comments. For each comment:\n1. Read and understand the feedback\n2. Make the requested code changes\n3. Push the fixes\n4. Reply to the comment confirming the resolution\n\nIf there are no comments, mark this task as done.\n\nRepeat this check — if new comments appear after your fixes, resolve those too.",
+        contextFrom: "pr",
+        sameAgentAs: "implement",
+      },
+    ],
+  },
+];
 
 function interpolateTemplate(
   template: string,
@@ -59,14 +187,34 @@ function flattenOutputToString(output: Record<string, unknown> | null): string {
 }
 
 export function pipelineService(db: Db) {
+  async function ensureDefaultTemplates(companyId: string) {
+    const existing = await db
+      .select({ name: pipelineTemplates.name })
+      .from(pipelineTemplates)
+      .where(eq(pipelineTemplates.companyId, companyId));
+    const existingNames = new Set(existing.map((t) => t.name));
+    const missing = DEFAULT_PIPELINE_TEMPLATES.filter((t) => !existingNames.has(t.name));
+    if (missing.length === 0) return;
+    await db.insert(pipelineTemplates).values(
+      missing.map((t) => ({
+        companyId,
+        name: t.name,
+        description: t.description,
+        stages: t.stages,
+      })),
+    );
+  }
+
   // Template CRUD
   const templateOps = {
-    list: (companyId: string) =>
-      db
+    list: async (companyId: string) => {
+      await ensureDefaultTemplates(companyId);
+      return db
         .select()
         .from(pipelineTemplates)
         .where(eq(pipelineTemplates.companyId, companyId))
-        .orderBy(desc(pipelineTemplates.createdAt)),
+        .orderBy(desc(pipelineTemplates.createdAt));
+    },
 
     getById: (id: string) =>
       db

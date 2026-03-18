@@ -184,7 +184,7 @@ export type {
   PluginLauncherDeclaration,
   PluginMinimumHostVersion,
   PluginUiDeclaration,
-  PaperclipPluginManifestV1,
+  NexioPluginManifestV1,
   PluginRecord,
   PluginStateRecord,
   PluginConfig,
@@ -367,7 +367,7 @@ export {
 } from "./project-mentions.js";
 
 export {
-  paperclipConfigSchema,
+  nexioConfigSchema,
   configMetaSchema,
   llmConfigSchema,
   databaseBackupConfigSchema,
@@ -380,7 +380,7 @@ export {
   storageLocalDiskConfigSchema,
   storageS3ConfigSchema,
   secretsLocalEncryptedConfigSchema,
-  type PaperclipConfig,
+  type NexioConfig,
   type LlmConfig,
   type DatabaseBackupConfig,
   type DatabaseConfig,
