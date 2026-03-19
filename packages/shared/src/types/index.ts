@@ -107,3 +107,4 @@ export type {
   PluginWebhookDeliveryRecord,
 } from "./plugin.js";
 export type { PipelineTemplate, PipelineRun, PipelineStage } from "./pipeline.js";
+export type { AgentKnowledgeEntry } from "./agent-knowledge.js";

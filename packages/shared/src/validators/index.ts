@@ -191,3 +191,12 @@ export {
   type CreatePipelineRun,
   type ReviewPipelineStage,
 } from "./pipeline.js";
+
+export {
+  KNOWLEDGE_ENTRY_TYPES,
+  createAgentKnowledgeSchema,
+  updateAgentKnowledgeSchema,
+  type KnowledgeEntryType,
+  type CreateAgentKnowledge,
+  type UpdateAgentKnowledge,
+} from "./agent-knowledge.js";

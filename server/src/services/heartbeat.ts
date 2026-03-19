@@ -1757,6 +1757,17 @@ export function heartbeatService(db: Db) {
           "local agent jwt secret missing or invalid; running without injected NEXIO_API_KEY",
         );
       }
+      // Inject agent knowledge into context
+      try {
+        const { agentKnowledgeService } = await import("./agent-knowledge.js");
+        const knowledgeBlock = await agentKnowledgeService(db).buildPromptBlock(agent.id);
+        if (knowledgeBlock) {
+          context.nexioKnowledgeBlock = knowledgeBlock;
+        }
+      } catch {
+        // Knowledge injection is non-critical
+      }
+
       const adapterResult = await adapter.execute({
         runId: run.id,
         agent,

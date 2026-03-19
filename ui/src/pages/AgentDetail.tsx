@@ -14,6 +14,7 @@ import { useDialog } from "../context/DialogContext";
 import { useBreadcrumbs } from "../context/BreadcrumbContext";
 import { queryKeys } from "../lib/queryKeys";
 import { AgentConfigForm } from "../components/AgentConfigForm";
+import { AgentKnowledgeTab } from "../components/AgentKnowledgeTab";
 import { PageTabBar } from "../components/PageTabBar";
 import { adapterLabels, roleLabels } from "../components/agent-config-primitives";
 import { getUIAdapter, buildTranscript } from "../adapters";
@@ -175,10 +176,11 @@ function scrollToContainerBottom(container: ScrollContainer, behavior: ScrollBeh
   container.scrollTo({ top: container.scrollHeight, behavior });
 }
 
-type AgentDetailView = "dashboard" | "configuration" | "runs";
+type AgentDetailView = "dashboard" | "knowledge" | "configuration" | "runs";
 
 function parseAgentDetailView(value: string | null): AgentDetailView {
   if (value === "configure" || value === "configuration") return "configuration";
+  if (value === "knowledge") return "knowledge";
   if (value === "runs") return value;
   return "dashboard";
 }
@@ -570,6 +572,7 @@ export function AgentDetail() {
           <PageTabBar
             items={[
               { value: "dashboard", label: "Dashboard" },
+              { value: "knowledge", label: "Knowledge" },
               { value: "configuration", label: "Configuration" },
               { value: "runs", label: "Runs" },
             ]}
@@ -665,6 +668,10 @@ export function AgentDetail() {
           onSavingChange={setConfigSaving}
           updatePermissions={updatePermissions}
         />
+      )}
+
+      {activeView === "knowledge" && (
+        <AgentKnowledgeTab agentId={agent.id} />
       )}
 
       {activeView === "runs" && (

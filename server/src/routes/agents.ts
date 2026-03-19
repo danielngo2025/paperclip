@@ -8,6 +8,8 @@ import {
   createAgentKeySchema,
   createAgentHireSchema,
   createAgentSchema,
+  createAgentKnowledgeSchema,
+  updateAgentKnowledgeSchema,
   deriveAgentUrlKey,
   isUuidLike,
   resetAgentSessionSchema,
@@ -28,6 +30,7 @@ import {
   issueService,
   logActivity,
   secretService,
+  agentKnowledgeService,
 } from "../services/index.js";
 import { conflict, forbidden, notFound, unprocessable } from "../errors.js";
 import { assertBoard, assertCompanyAccess, getActorInfo } from "./authz.js";
@@ -1624,6 +1627,55 @@ export function agentRoutes(db: Db) {
       agentName: agent.name,
       adapterType: agent.adapterType,
     });
+  });
+
+  // --- Agent Knowledge CRUD ---
+
+  const knowledgeSvc = agentKnowledgeService(db);
+
+  router.get("/agents/:id/knowledge", async (req, res) => {
+    const agent = await svc.getById(req.params.id as string);
+    if (!agent) { res.status(404).json({ error: "Agent not found" }); return; }
+    assertCompanyAccess(req, agent.companyId);
+    const entries = await knowledgeSvc.list(agent.id);
+    res.json(entries);
+  });
+
+  router.post("/agents/:id/knowledge", validate(createAgentKnowledgeSchema), async (req, res) => {
+    const agent = await svc.getById(req.params.id as string);
+    if (!agent) { res.status(404).json({ error: "Agent not found" }); return; }
+    assertCompanyAccess(req, agent.companyId);
+    const entry = await knowledgeSvc.create(agent.id, agent.companyId, req.body);
+    const actor = getActorInfo(req);
+    await logActivity(db, {
+      companyId: agent.companyId,
+      actorType: actor.actorType,
+      actorId: actor.actorId,
+      agentId: actor.agentId,
+      action: "agent.knowledge_added",
+      entityType: "agent",
+      entityId: agent.id,
+      details: { entryId: entry.id, type: entry.type, title: entry.title },
+    });
+    res.status(201).json(entry);
+  });
+
+  router.patch("/agents/:id/knowledge/:entryId", validate(updateAgentKnowledgeSchema), async (req, res) => {
+    const agent = await svc.getById(req.params.id as string);
+    if (!agent) { res.status(404).json({ error: "Agent not found" }); return; }
+    assertCompanyAccess(req, agent.companyId);
+    const entry = await knowledgeSvc.update(req.params.entryId as string, req.body);
+    if (!entry) { res.status(404).json({ error: "Knowledge entry not found" }); return; }
+    res.json(entry);
+  });
+
+  router.delete("/agents/:id/knowledge/:entryId", async (req, res) => {
+    const agent = await svc.getById(req.params.id as string);
+    if (!agent) { res.status(404).json({ error: "Agent not found" }); return; }
+    assertCompanyAccess(req, agent.companyId);
+    const entry = await knowledgeSvc.remove(req.params.entryId as string);
+    if (!entry) { res.status(404).json({ error: "Knowledge entry not found" }); return; }
+    res.json(entry);
   });
 
   return router;

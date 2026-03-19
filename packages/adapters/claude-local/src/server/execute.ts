@@ -389,8 +389,10 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
       ? renderTemplate(bootstrapPromptTemplate, templateData).trim()
       : "";
   const sessionHandoffNote = asString(context.nexioSessionHandoffMarkdown, "").trim();
+  const knowledgeBlock = asString(context.nexioKnowledgeBlock, "").trim();
   const prompt = joinPromptSections([
     renderedBootstrapPrompt,
+    knowledgeBlock,
     sessionHandoffNote,
     renderedPrompt,
   ]);

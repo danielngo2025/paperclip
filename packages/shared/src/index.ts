@@ -196,6 +196,7 @@ export type {
   PipelineTemplate,
   PipelineRun,
   PipelineStage,
+  AgentKnowledgeEntry,
 } from "./types/index.js";
 
 export {
@@ -353,6 +354,12 @@ export {
   type UpdatePipelineTemplate,
   type CreatePipelineRun,
   type ReviewPipelineStage,
+  KNOWLEDGE_ENTRY_TYPES,
+  createAgentKnowledgeSchema,
+  updateAgentKnowledgeSchema,
+  type KnowledgeEntryType,
+  type CreateAgentKnowledge,
+  type UpdateAgentKnowledge,
 } from "./validators/index.js";
 
 export { API_PREFIX, API } from "./api.js";

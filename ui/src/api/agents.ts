@@ -7,6 +7,7 @@ import type {
   HeartbeatRun,
   Approval,
   AgentConfigRevision,
+  AgentKnowledgeEntry,
 } from "@nexioai/shared";
 import { isUuidLike, normalizeAgentUrlKey } from "@nexioai/shared";
 import { ApiError, api } from "./client";
@@ -144,4 +145,14 @@ export const agentsApi = {
   ) => api.post<HeartbeatRun | { status: "skipped" }>(agentPath(id, companyId, "/wakeup"), data),
   loginWithClaude: (id: string, companyId?: string) =>
     api.post<ClaudeLoginResult>(agentPath(id, companyId, "/claude-login"), {}),
+
+  // Knowledge
+  listKnowledge: (agentId: string) =>
+    api.get<AgentKnowledgeEntry[]>(`/agents/${agentId}/knowledge`),
+  createKnowledge: (agentId: string, data: Record<string, unknown>) =>
+    api.post<AgentKnowledgeEntry>(`/agents/${agentId}/knowledge`, data),
+  updateKnowledge: (agentId: string, entryId: string, data: Record<string, unknown>) =>
+    api.patch<AgentKnowledgeEntry>(`/agents/${agentId}/knowledge/${entryId}`, data),
+  deleteKnowledge: (agentId: string, entryId: string) =>
+    api.delete<AgentKnowledgeEntry>(`/agents/${agentId}/knowledge/${entryId}`),
 };
