@@ -305,10 +305,15 @@ export async function runClaudeLogin(input: {
 export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExecutionResult> {
   const { runId, agent, runtime, config, context, onLog, onMeta, authToken } = ctx;
 
-  const promptTemplate = asString(
+  const rawPromptTemplate = asString(
     config.promptTemplate,
-    "You are agent {{agent.id}} ({{agent.name}}). Continue your Nexio work.",
+    "You are agent {{agent.id}} ({{agent.name}}).",
   );
+  const heartbeatInstruction =
+    "\n\nYou are running inside a Nexio heartbeat. Use the /paperclip skill to check your assignments and do work. Start now.";
+  const promptTemplate = rawPromptTemplate.includes("/paperclip")
+    ? rawPromptTemplate
+    : rawPromptTemplate + heartbeatInstruction;
   const model = asString(config.model, "");
   const effort = asString(config.effort, "");
   const chrome = asBoolean(config.chrome, false);
