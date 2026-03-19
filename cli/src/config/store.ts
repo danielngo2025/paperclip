@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { paperclipConfigSchema, type NexioConfig } from "./schema.js";
+import { nexioConfigSchema, type NexioConfig } from "./schema.js";
 import {
   resolveDefaultConfigPath,
   resolveNexioInstanceId,
@@ -88,7 +88,7 @@ export function readConfig(configPath?: string): NexioConfig | null {
   if (!fs.existsSync(filePath)) return null;
   const raw = parseJson(filePath);
   const migrated = migrateLegacyConfig(raw);
-  const parsed = paperclipConfigSchema.safeParse(migrated);
+  const parsed = nexioConfigSchema.safeParse(migrated);
   if (!parsed.success) {
     throw new Error(`Invalid config at ${filePath}: ${formatValidationError(parsed.error)}`);
   }

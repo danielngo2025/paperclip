@@ -1077,7 +1077,7 @@ export function registerWorktreeCommands(program: Command): void {
   program
     .command("worktree:make")
     .description("Create ~/NAME as a git worktree, then initialize an isolated Nexio instance inside it")
-    .argument("<name>", "Worktree name — auto-prefixed with paperclip- if needed (created at ~/paperclip-NAME)")
+    .argument("<name>", "Worktree name — auto-prefixed with nexio- if needed (created at ~/nexio-NAME)")
     .option("--start-point <ref>", "Remote ref to base the new branch on (env: NEXIO_WORKTREE_START_POINT)")
     .option("--instance <id>", "Explicit isolated instance id")
     .option("--home <path>", `Home root for worktree instances (env: NEXIO_WORKTREES_DIR, default: ${DEFAULT_WORKTREE_HOME})`)
@@ -1117,7 +1117,7 @@ export function registerWorktreeCommands(program: Command): void {
   program
     .command("worktree:cleanup")
     .description("Safely remove a worktree, its branch, and its isolated instance data")
-    .argument("<name>", "Worktree name — auto-prefixed with paperclip- if needed")
+    .argument("<name>", "Worktree name — auto-prefixed with nexio- if needed")
     .option("--instance <id>", "Explicit instance id (if different from the worktree name)")
     .option("--home <path>", `Home root for worktree instances (env: NEXIO_WORKTREES_DIR, default: ${DEFAULT_WORKTREE_HOME})`)
     .option("--force", "Bypass safety checks (uncommitted changes, unique commits)", false)

@@ -46,7 +46,7 @@ describe("agent local JWT", () => {
       adapter_type: "claude_local",
       run_id: "run-1",
       iss: "nexio",
-      aud: "paperclip-api",
+      aud: "nexio-api",
     });
   });
 
@@ -73,7 +73,7 @@ describe("agent local JWT", () => {
     const token = createLocalAgentJwt("agent-1", "company-1", "codex_local", "run-1");
 
     process.env[issuerEnv] = "nexio";
-    process.env[audienceEnv] = "paperclip-api";
+    process.env[audienceEnv] = "nexio-api";
     expect(verifyLocalAgentJwt(token!)).toBeNull();
   });
 });

@@ -57,7 +57,7 @@ export async function bootstrapCeoInvite(opts: {
   loadNexioEnvFile(configPath);
   const config = readConfig(configPath);
   if (!config) {
-    p.log.error(`No config found at ${configPath}. Run ${pc.cyan("paperclip onboard")} first.`);
+    p.log.error(`No config found at ${configPath}. Run ${pc.cyan("nexio onboard")} first.`);
     return;
   }
 

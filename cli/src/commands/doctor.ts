@@ -29,7 +29,7 @@ export async function doctor(opts: {
   yes?: boolean;
 }): Promise<{ passed: number; warned: number; failed: number }> {
   printNexioCliBanner();
-  p.intro(pc.bgCyan(pc.black(" paperclip doctor ")));
+  p.intro(pc.bgCyan(pc.black(" nexio doctor ")));
 
   const configPath = resolveConfigPath(opts.config);
   loadNexioEnvFile(configPath);
