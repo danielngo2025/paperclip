@@ -247,6 +247,10 @@ export function News() {
         </Tabs>
 
         <div className="flex items-center gap-2">
+          <Button size="sm" variant="outline" onClick={handleCollectNews}>
+            <Plus className="h-3.5 w-3.5 mr-1.5" />
+            New News
+          </Button>
           {newsAgentIds.size > 0 && (
             <Select value={agentFilter} onValueChange={setAgentFilter}>
               <SelectTrigger className="w-[160px] h-8 text-xs">
@@ -285,7 +289,7 @@ export function News() {
       {view === "briefings" && (
         <>
           {briefings && briefings.length === 0 && (
-            <EmptyState icon={Newspaper} message="No briefings yet. Assign an agent to collect news." action="News" onAction={handleCollectNews} />
+            <EmptyState icon={Newspaper} message="No briefings yet. Click + New News to assign an agent." />
           )}
           {briefings && briefings.length > 0 && (
             <div className="grid gap-2">

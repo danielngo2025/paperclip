@@ -1,4 +1,4 @@
-# @paperclipai/shared
+# @nexioai/shared
 
 ## 0.3.1
 

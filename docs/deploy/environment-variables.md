@@ -3,7 +3,7 @@ title: Environment Variables
 summary: Full environment variable reference
 ---
 
-All environment variables that Paperclip uses for server configuration.
+All environment variables that Nexio uses for server configuration.
 
 ## Server Configuration
 
@@ -12,7 +12,7 @@ All environment variables that Paperclip uses for server configuration.
 | `PORT` | `3100` | Server port |
 | `HOST` | `127.0.0.1` | Server host binding |
 | `DATABASE_URL` | (embedded) | PostgreSQL connection string |
-| `NEXIO_HOME` | `~/.paperclip` | Base directory for all Paperclip data |
+| `NEXIO_HOME` | `~/.nexio` | Base directory for all Nexio data |
 | `NEXIO_INSTANCE_ID` | `default` | Instance identifier (for multiple local instances) |
 | `NEXIO_DEPLOYMENT_MODE` | `local_trusted` | Runtime mode override |
 
@@ -21,7 +21,7 @@ All environment variables that Paperclip uses for server configuration.
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `NEXIO_SECRETS_MASTER_KEY` | (from file) | 32-byte encryption key (base64/hex/raw) |
-| `NEXIO_SECRETS_MASTER_KEY_FILE` | `~/.paperclip/.../secrets/master.key` | Path to key file |
+| `NEXIO_SECRETS_MASTER_KEY_FILE` | `~/.nexio/.../secrets/master.key` | Path to key file |
 | `NEXIO_SECRETS_STRICT_MODE` | `false` | Require secret refs for sensitive env vars |
 
 ## Agent Runtime (Injected into agent processes)
@@ -32,7 +32,7 @@ These are set automatically by the server when invoking agents:
 |----------|-------------|
 | `NEXIO_AGENT_ID` | Agent's unique ID |
 | `NEXIO_COMPANY_ID` | Company ID |
-| `NEXIO_API_URL` | Paperclip API base URL |
+| `NEXIO_API_URL` | Nexio API base URL |
 | `NEXIO_API_KEY` | Short-lived JWT for API auth |
 | `NEXIO_RUN_ID` | Current heartbeat run ID |
 | `NEXIO_TASK_ID` | Issue that triggered this wake |

@@ -16,10 +16,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/paperclipai/paperclip.git",
+    "url": "https://github.com/danielngo2025/Nexio.git",
     "directory": "cli"
   },
-  "homepage": "https://github.com/paperclipai/paperclip",
+  "homepage": "https://github.com/danielngo2025/Nexio",
   "files": [
     "dist"
   ],

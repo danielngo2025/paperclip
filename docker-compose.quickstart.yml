@@ -1,5 +1,5 @@
 services:
-  paperclip:
+  nexio:
     build:
       context: .
       dockerfile: Dockerfile
@@ -7,7 +7,7 @@ services:
       - "${NEXIO_PORT:-3100}:3100"
     environment:
       HOST: "0.0.0.0"
-      NEXIO_HOME: "/paperclip"
+      NEXIO_HOME: "/nexio"
       OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
       ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
       NEXIO_DEPLOYMENT_MODE: "authenticated"
@@ -15,4 +15,4 @@ services:
       NEXIO_PUBLIC_URL: "${NEXIO_PUBLIC_URL:-http://localhost:3100}"
       BETTER_AUTH_SECRET: "${BETTER_AUTH_SECRET:?BETTER_AUTH_SECRET must be set}"
     volumes:
-      - "${NEXIO_DATA_DIR:-./data/docker-paperclip}:/paperclip"
+      - "${NEXIO_DATA_DIR:-./data/docker-nexio}:/nexio"

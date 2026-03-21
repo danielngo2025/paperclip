@@ -1,5 +1,5 @@
 ---
-name: paperclip
+name: nexio
 description: >
   Interact with the Nexio control plane API to manage tasks, coordinate with
   other agents, and follow company governance. Use when you need to check
@@ -16,7 +16,7 @@ You run in **heartbeats** — short execution windows triggered by Nexio. Each h
 
 Env vars auto-injected: `NEXIO_AGENT_ID`, `NEXIO_COMPANY_ID`, `NEXIO_API_URL`, `NEXIO_RUN_ID`. Optional wake-context vars may also be present: `NEXIO_TASK_ID` (issue/task that triggered this wake), `NEXIO_WAKE_REASON` (why this run was triggered), `NEXIO_WAKE_COMMENT_ID` (specific comment that triggered this wake), `NEXIO_APPROVAL_ID`, `NEXIO_APPROVAL_STATUS`, and `NEXIO_LINKED_ISSUE_IDS` (comma-separated). For local adapters, `NEXIO_API_KEY` is auto-injected as a short-lived run JWT. For non-local adapters, your operator should set `NEXIO_API_KEY` in adapter config. All requests use `Authorization: Bearer $NEXIO_API_KEY`. All endpoints under `/api`, all JSON. Never hard-code the API URL.
 
-Manual local CLI mode (outside heartbeat runs): use `paperclipai agent local-cli <agent-id-or-shortname> --company-id <company-id>` to install Nexio skills for Claude/Codex and print/export the required `NEXIO_*` environment variables for that agent identity.
+Manual local CLI mode (outside heartbeat runs): use `nexioai agent local-cli <agent-id-or-shortname> --company-id <company-id>` to install Nexio skills for Claude/Codex and print/export the required `NEXIO_*` environment variables for that agent identity.
 
 **Run audit trail:** You MUST include `-H 'X-Nexio-Run-Id: $NEXIO_RUN_ID'` on ALL API requests that modify issues (checkout, update, comment, create subtask, release). This links your actions to the current heartbeat run for traceability.
 
@@ -139,8 +139,8 @@ Access control:
 - **@-mentions** (`@AgentName` in comments) trigger heartbeats — use sparingly, they cost budget.
 - **Budget**: auto-paused at 100%. Above 80%, focus on critical tasks only.
 - **Escalate** via `chainOfCommand` when stuck. Reassign to manager or create a task for them.
-- **Hiring**: use `paperclip-create-agent` skill for new agent creation workflows.
-- **Commit Co-author**: if you make a git commit you MUST add `Co-Authored-By: Nexio <noreply@paperclip.ing>` to the end of each commit message
+- **Hiring**: use `nexio-create-agent` skill for new agent creation workflows.
+- **Commit Co-author**: if you make a git commit you MUST add `Co-Authored-By: Nexio <noreply@nexio.dev>` to the end of each commit message
 
 ## Comment Style (Required)
 
@@ -340,7 +340,7 @@ Use this when validating Nexio itself (assignment flow, checkouts, run visibilit
 1. Create a throwaway issue assigned to a known local agent (`claudecoder` or `codexcoder`):
 
 ```bash
-pnpm paperclipai issue create \
+pnpm nexioai issue create \
   --company-id "$NEXIO_COMPANY_ID" \
   --title "Self-test: assignment/watch flow" \
   --description "Temporary validation issue" \
@@ -351,19 +351,19 @@ pnpm paperclipai issue create \
 2. Trigger and watch a heartbeat for that assignee:
 
 ```bash
-pnpm paperclipai heartbeat run --agent-id "$NEXIO_AGENT_ID"
+pnpm nexioai heartbeat run --agent-id "$NEXIO_AGENT_ID"
 ```
 
 3. Verify the issue transitions (`todo -> in_progress -> done` or `blocked`) and that comments are posted:
 
 ```bash
-pnpm paperclipai issue get <issue-id-or-identifier>
+pnpm nexioai issue get <issue-id-or-identifier>
 ```
 
 4. Reassignment test (optional): move the same issue between `claudecoder` and `codexcoder` and confirm wake/run behavior:
 
 ```bash
-pnpm paperclipai issue update <issue-id> --assignee-agent-id <other-agent-id> --status todo
+pnpm nexioai issue update <issue-id> --assignee-agent-id <other-agent-id> --status todo
 ```
 
 5. Cleanup: mark temporary issues done/cancelled with a clear note.

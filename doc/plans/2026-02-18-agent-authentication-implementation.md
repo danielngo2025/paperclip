@@ -19,8 +19,8 @@
 - New config/env settings:
   - `NEXIO_AGENT_JWT_SECRET`
   - `NEXIO_AGENT_JWT_TTL_SECONDS` (default: `172800`)
-  - `NEXIO_AGENT_JWT_ISSUER` (default: `paperclip`)
-  - `NEXIO_AGENT_JWT_AUDIENCE` (default: `paperclip-api`)
+  - `NEXIO_AGENT_JWT_ISSUER` (default: `nexio`)
+  - `NEXIO_AGENT_JWT_AUDIENCE` (default: `nexio-api`)
 
 ## 2) Dual authentication path in `actorMiddleware`
 
@@ -60,7 +60,7 @@
 ## 5) Documentation updates
 
 - Update operator-facing docs to remove manual key setup expectation for local adapters:
-  - `skills/paperclip/SKILL.md`
+  - `skills/nexio/SKILL.md`
   - `cli/src/commands/heartbeat-run.ts` output/help examples if they mention manual API key setup.
 
 ## 6) P0 acceptance criteria
