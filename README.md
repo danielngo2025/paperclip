@@ -183,10 +183,13 @@ Or manually:
 git clone https://github.com/paperclipai/paperclip.git
 cd paperclip
 pnpm install
+export NEXIO_AGENT_JWT_SECRET=$(openssl rand -base64 32)
 pnpm dev
 ```
 
 This starts the API server at `http://localhost:3100`. An embedded PostgreSQL database is created automatically — no setup required.
+
+> **`NEXIO_AGENT_JWT_SECRET`** is required for agent JWT authentication. Agents use this secret to authenticate when calling back to the server. Generate a fresh one with `openssl rand -base64 32`.
 
 > **Requirements:** Node.js 20+, pnpm 9.15+
 

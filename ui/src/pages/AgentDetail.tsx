@@ -317,9 +317,11 @@ export function AgentDetail() {
     const canonicalTab =
       activeView === "configuration"
         ? "configuration"
-        : activeView === "runs"
-          ? "runs"
-          : "dashboard";
+        : activeView === "knowledge"
+          ? "knowledge"
+          : activeView === "runs"
+            ? "runs"
+            : "dashboard";
     if (routeAgentRef !== canonicalAgentRef || urlTab !== canonicalTab) {
       navigate(`/agents/${canonicalAgentRef}/${canonicalTab}`, { replace: true });
       return;
