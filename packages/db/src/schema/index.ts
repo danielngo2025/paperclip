@@ -47,3 +47,5 @@ export { pipelineTemplates } from "./pipeline_templates.js";
 export { agentKnowledge } from "./agent_knowledge.js";
 export { pipelineRuns } from "./pipeline_runs.js";
 export { pipelineStages } from "./pipeline_stages.js";
+export { newsArticles } from "./news_articles.js";
+export { newsBriefings } from "./news_briefings.js";

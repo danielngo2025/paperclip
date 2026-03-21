@@ -256,6 +256,72 @@ PATCH /api/agents/{agentId}/instructions-path
 | List agents                           | `GET /api/companies/:companyId/agents`                                                     |
 | Dashboard                             | `GET /api/companies/:companyId/dashboard`                                                  |
 | Search issues                         | `GET /api/companies/:companyId/issues?q=search+term`                                       |
+| List news articles                    | `GET /api/companies/:companyId/news/articles?agentId=&category=`                           |
+| Create news article                   | `POST /api/companies/:companyId/agents/:agentId/news/articles`                             |
+| Batch create news articles            | `POST /api/companies/:companyId/agents/:agentId/news/articles/batch`                       |
+| List news briefings                   | `GET /api/companies/:companyId/news/briefings`                                             |
+| Create news briefing                  | `POST /api/companies/:companyId/agents/:agentId/news/briefings`                            |
+
+## News Collection Workflow
+
+When assigned an issue with title starting with "Collect News", follow this pipeline:
+
+**Step 1 — Collect signals.** Use web search and fetch tools to gather news from these sources:
+
+- **Hacker News**: Search Algolia API (`https://hn.algolia.com/api/v1/search?query=AI&tags=story&numericFilters=points>10`) for AI/ML keywords
+- **Reddit**: Fetch JSON from subreddits (`https://www.reddit.com/r/{subreddit}/hot.json?limit=25`) — MachineLearning, artificial, LocalLLaMA
+- **arXiv**: Fetch Atom feed (`https://export.arxiv.org/api/query?search_query=cat:cs.AI+OR+cat:cs.CL+OR+cat:cs.LG&max_results=25&sortBy=submittedDate&sortOrder=descending`)
+- **GitHub**: Search trending repos (`https://api.github.com/search/repositories?q=AI+OR+LLM+stars:>50+pushed:>{week_ago}&sort=stars`)
+- **RSS feeds**: Google AI Blog, OpenAI Blog, DeepMind, Hugging Face, MIT Tech Review
+
+**Step 2 — Extract & summarize.** For each signal, produce:
+- `title`: clean, concise title
+- `summary`: 1-2 sentence significance summary
+- `category`: one of `research`, `product`, `ecosystem`, `startup`, `events`
+- `entities`: key entities (companies, models, people)
+- `noveltyScore`: 0.0-1.0 (how surprising/new)
+- `impactScore`: 0.0-1.0 (based on engagement/significance)
+- `relevanceScore`: 0.0-1.0 (relevance to AI/ML topics)
+- `authorityScore`: 0.0-1.0 (source reputation: arxiv=0.9, github=0.7, hackernews=0.6, reddit=0.5, rss=0.8)
+
+**Step 3 — Post articles.** Batch-create via:
+
+```bash
+POST /api/companies/{companyId}/agents/{agentId}/news/articles/batch
+[
+  {
+    "source": "hackernews",
+    "url": "https://...",
+    "title": "...",
+    "summary": "...",
+    "category": "research",
+    "entities": ["GPT-5", "OpenAI"],
+    "noveltyScore": 0.8,
+    "impactScore": 0.9,
+    "relevanceScore": 0.7,
+    "authorityScore": 0.6,
+    "compositeScore": 0.75,
+    "lane": "research",
+    "author": "username",
+    "publishedAt": "2026-03-21T00:00:00Z"
+  }
+]
+```
+
+**Step 4 — Generate briefing.** Select the top 10-12 articles (highest composite score, balanced across categories). Generate a markdown briefing grouped by lane (Research & Papers, Products & Launches, Industry & Ecosystem, Startups & Funding, Events & Community). Post it:
+
+```bash
+POST /api/companies/{companyId}/agents/{agentId}/news/briefings
+{
+  "date": "2026-03-21",
+  "markdownContent": "# AI Intelligence Radar — 2026-03-21\n\n...",
+  "totalCollected": 150,
+  "totalSelected": 12,
+  "topics": ["large language model", "artificial intelligence", "machine learning"]
+}
+```
+
+**Step 5 — Report.** Post a comment on the issue with a summary of what was collected, then mark the issue `done`.
 
 ## Searching Issues
 

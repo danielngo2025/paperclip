@@ -200,3 +200,14 @@ export {
   type CreateAgentKnowledge,
   type UpdateAgentKnowledge,
 } from "./agent-knowledge.js";
+
+export {
+  NEWS_CATEGORIES,
+  NEWS_SOURCES,
+  createNewsArticleSchema,
+  createNewsBriefingSchema,
+  type NewsCategory,
+  type NewsSource,
+  type CreateNewsArticle,
+  type CreateNewsBriefing,
+} from "./news.js";

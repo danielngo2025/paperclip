@@ -29,6 +29,8 @@ import { PluginSettings } from "./pages/PluginSettings";
 import { PluginPage } from "./pages/PluginPage";
 import { RunTranscriptUxLab } from "./pages/RunTranscriptUxLab";
 import { OrgChart } from "./pages/OrgChart";
+import { News } from "./pages/News";
+import { NewsBriefingDetail } from "./pages/NewsBriefingDetail";
 import { Pipelines } from "./pages/Pipelines";
 import { PipelineRunDetail } from "./pages/PipelineRunDetail";
 import { PipelineTemplateDetail } from "./pages/PipelineTemplateDetail";
@@ -149,6 +151,8 @@ function boardRoutes() {
       <Route path="pipelines/runs/:runId" element={<PipelineRunDetail />} />
       <Route path="pipelines/templates/new" element={<PipelineTemplateDetail />} />
       <Route path="pipelines/templates/:templateId" element={<PipelineTemplateDetail />} />
+      <Route path="news" element={<News />} />
+      <Route path="news/briefings/:briefingId" element={<NewsBriefingDetail />} />
       <Route path="approvals" element={<Navigate to="/approvals/pending" replace />} />
       <Route path="approvals/pending" element={<Approvals />} />
       <Route path="approvals/all" element={<Approvals />} />

@@ -197,6 +197,8 @@ export type {
   PipelineRun,
   PipelineStage,
   AgentKnowledgeEntry,
+  NewsArticle,
+  NewsBriefing,
 } from "./types/index.js";
 
 export {
@@ -360,6 +362,14 @@ export {
   type KnowledgeEntryType,
   type CreateAgentKnowledge,
   type UpdateAgentKnowledge,
+  NEWS_CATEGORIES,
+  NEWS_SOURCES,
+  createNewsArticleSchema,
+  createNewsBriefingSchema,
+  type NewsCategory,
+  type NewsSource,
+  type CreateNewsArticle,
+  type CreateNewsBriefing,
 } from "./validators/index.js";
 
 export { API_PREFIX, API } from "./api.js";
